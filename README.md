@@ -57,13 +57,15 @@ Automate print requests and invoice generating processes, where all print job re
 
 - Access the application at http://localhost:8000.
 - Upload a file to receive a quote.
-- Admin dashboard available at /admin to update pricing and view print jobs.
+- Admin dashboard available at `/admin` to update pricing and view print jobs.
 
 ## Pricing Calculation
 
-- Black and White Pages: N20 per page
-- Coloured Pages: N25 per page
-- Image Pixels: N0.00005 per pixel (optional bonus)
+Prices of each type can be set by the admin where the latest pricing will be used where multiple exists.
+
+- **Black and White Pages:** N20 per page
+- **Coloured Pages:** N25 per page
+- **Image Pixels:** N0.00005 per pixel (optional bonus)
 
 ## Deployment
 
@@ -72,8 +74,8 @@ Automate print requests and invoice generating processes, where all print job re
 
 ## Development Notes
 
-- File Processing: Uses libraries for PDF and DOCX analysis.
-- Mock Services: Payment and email functionalities are simulated for demonstration.
+- **File Processing:** Uses libraries for PDF and DOCX analysis.
+- **Mock Services:** Payment and email functionalities are simulated for demonstration.
 
 ## Conclusion
 
@@ -81,8 +83,8 @@ This application streamlines the printing process, reduces corruption risk, and 
 
 ## License
 
-This project is open-source and available under the MIT License.
+This project is unlicensed.
 
 ## Contact
 
-For questions or support, please contact gbenga@nigerianlawpublications.com.
+For questions or support, please contact [Joel Okoromi](mailto:okmarq@gmail.com)
