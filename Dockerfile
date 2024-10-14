@@ -15,15 +15,6 @@ ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr
 ENV APP_NAME="Print Automation"
 ENV FILESYSTEM_DISK=public
-ENV MAIL_MAILER=smtp
-ENV MAIL_HOST=sandbox.smtp.mailtrap.io
-ENV MAIL_PORT=2525
-ENV MAIL_USERNAME=5bd6dbcc14ec57
-ENV MAIL_PASSWORD=3c8a132fbdf2bf
-ENV MAIL_ENCRYPTION=tls
-ENV MAIL_FROM_ADDRESS=okmarq@gmail.com
-ENV MAIL_FROM_NAME="${APP_NAME}"
-ENV QUEUE_CONNECTION=database
 
 
 # Allow composer to run as root

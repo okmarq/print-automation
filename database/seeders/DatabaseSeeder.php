@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             'firstname' => 'AdminF',
             'lastname' => 'AdminL',
             'email' => 'test@example.com',
-            'password' => Hash::make('password')
+            'password' => Hash::make(env('TEST_PASSWORD'))
         ]);
         $user->attachRole(config('constants.role.admin'));
     }
