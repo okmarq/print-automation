@@ -17,5 +17,9 @@ export default {
         },
     },
 
+    variants: {
+        backgroundColor: ['responsive', 'hover', 'focus', 'active', 'group-hover'],
+    },
+
     plugins: [forms],
 };
