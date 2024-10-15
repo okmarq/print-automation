@@ -8,5 +8,6 @@ return [
     'status' => [
         'paid' => 'paid',
         'unpaid' => 'unpaid',
+        'incomplete' => 'incomplete'
     ],
 ];
