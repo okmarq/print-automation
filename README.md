@@ -9,6 +9,10 @@ Automate print requests and invoice generating processes, where all print job re
 - **File Processing:** Determine page counts and color usage for accurate pricing.
 - **Email:** Send email confirmations.
 - **Mock Payment:** Simulate payment confirmations.
+- **Intervention:** Image processing
+- **PhpOffice:** DOCX processing
+- **Smalot:** PDF processing
+- **Pub/Sub Messaging:** for asynchronous processing of print jobs
 
 ## Requirements
 
@@ -16,6 +20,7 @@ Automate print requests and invoice generating processes, where all print job re
 - Composer
 - Laravel 11.x
 - MySQL or PostgreSQL
+- PHP Imagick
 
 ## Installation
 
@@ -55,9 +60,17 @@ Automate print requests and invoice generating processes, where all print job re
 
 ## Usage
 
+### Customer
+
 - Access the application at http://localhost:8000.
-- Upload a file to receive a quote.
-- Admin dashboard available at `/admin` to update pricing and view print jobs.
+- Upload a file to receive a quote via email after it has been processed asynchronously.
+- After which payment can be made and an email is sent to the user for every payment made.
+- Incomplete payments made will keep the status as unpaid until a complete payment is made for the print job.
+
+### Admin
+
+- Admin dashboard available at `/admin` to add price settings and view print jobs.
+- If there's no admin settings present, a customer cannot make an upload which is checked by a middleware.
 
 ## Pricing Calculation
 
@@ -92,7 +105,7 @@ For questions or support, please contact [Joel Okoromi](mailto:okmarq@gmail.com)
 ## Design thoughts & tradeoffs
 
 Processing the file in the PrintJobController synchronously would lead to immediate display of the completed processed job and quote on screen.
-   
+
 However, this is not ideal since I/O requests in general degrades sever performance and in production could impact users negatively.
 
 Making use of a Job instead will delay the file processing and Quotation which is remedied by the email being sent after processing.
