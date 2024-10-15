@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('print')->group(function () {
         Route::get('/', [PrintJobController::class, 'index'])->name('print.upload');
-        Route::get('upload', [PrintJobController::class, 'create'])->name('print.create');
+        Route::get('upload', [PrintJobController::class, 'create'])->name('print.create')->middleware('settings');;
         Route::post('upload', [PrintJobController::class, 'store'])->name('print.upload.store');
         Route::post('submit', [PrintJobController::class, 'submit']);
     });
