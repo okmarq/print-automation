@@ -46,13 +46,24 @@ Automate print requests and invoice generating processes, where all print job re
     ```
     php artisan key:generate
     ```
-5. **Run migrations and seed data:**
+5. **Link storage data:**
+
+    ```
+    php artisan storage:link
+    ```
+6. **Run migrations and seed data:**
 
     ```
     php artisan migrate --seed
     ```
 
-6. **Serve the application:**
+7. **Start queue:**
+
+    ```
+    php artisan queue:work
+    ```
+
+8. **Serve the application:**
 
     ```
     php artisan serve
