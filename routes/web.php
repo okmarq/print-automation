@@ -32,7 +32,9 @@ Route::middleware('auth')->group(function () {
         Route::post('upload', [PrintJobController::class, 'store'])->name('print.upload.store');
         Route::post('submit', [PrintJobController::class, 'submit']);
     });
+
+    Route::get('pay/{printJob}', [PaymentController::class, 'create'])->name('payment.create');
     Route::post('pay/{printJob}', [PaymentController::class, 'store'])->name('payment.store');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
