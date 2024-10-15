@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Mail\PrintPayment;
 use App\Http\Requests\StorePaymentRequest;
+use App\Models\Payment;
 use App\Models\PrintJob;
+use App\Models\User;
 use Exception;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -26,28 +28,35 @@ class PaymentController extends Controller
         DB::beginTransaction();
 
         try {
-            $this->createPayment($request, $printJob);
+            if ($printJob->amount > 0) {
+                $payment = $this->createPayment($request, $printJob);
+            } else {
+                return redirect()->route('payment.create', $printJob)->with('error', 'Payment unsuccessful. Try again.');
+            }
             $this->updatePrintJobAmount($printJob, $request['amount']);
 
             DB::commit();
-            $this->sendPaymentConfirmationEmail($printJob);
+            $this->sendPaymentConfirmationEmail($printJob->user, $payment);
 
             return redirect()->route('print.upload')->with('success', 'Payment successful. Confirmation email sent. Refresh your page to see changes.');
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage());
 
-            return redirect()->route('payment.create')->with('error', 'Payment unsuccessful. Try again.');
+            return redirect()->route('payment.create', $printJob)->with('error', 'Payment unsuccessful. Try again.');
         }
     }
 
-    private function createPayment(StorePaymentRequest $request, PrintJob $printJob): void
+    /**
+     * @throws Exception
+     */
+    private function createPayment(StorePaymentRequest $request, PrintJob $printJob): Payment
     {
-        $status = $request['amount'] < $printJob->amount
+        $status = ($request['amount'] < $printJob->amount)
             ? config('constants.status.incomplete')
             : config('constants.status.paid');
 
-        $printJob->payment()->create([
+        $payment = Payment::create([
             'print_job_id' => $printJob->id,
             'amount' => $request['amount'],
             'status' => $status,
@@ -55,6 +64,7 @@ class PaymentController extends Controller
 
         $printJob->status = $status;
         $printJob->save();
+        return $payment;
     }
 
     private function updatePrintJobAmount(PrintJob $printJob, float $paymentAmount): void
@@ -63,8 +73,8 @@ class PaymentController extends Controller
         $printJob->save();
     }
 
-    private function sendPaymentConfirmationEmail(PrintJob $printJob): void
+    private function sendPaymentConfirmationEmail(User $user, Payment $payment): void
     {
-         Mail::to($printJob->user)->send(new PrintPayment($printJob->payment));
+        Mail::to($user)->send(new PrintPayment($payment));
     }
 }
