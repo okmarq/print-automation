@@ -13,7 +13,6 @@ class AdminSetting extends Model
         'version',
         'cost_bw_page',
         'cost_color_page',
-        'cost_pixel_image',
-        'is_preferred'
+        'cost_pixel_image'
     ];
 }
