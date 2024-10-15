@@ -7,8 +7,8 @@
     Colored:        {{ $printJob->colored_pages }}
     Non colored:    {{ $printJob->black_white_pages }}
     Pixels:         {{ $printJob->total_pixels }}
-    Price:          {{ $printJob->amount }}
+    Price:          {{ '₦' . number_format($printJob->amount, 2) }}
 
-    Thanks,<br>
+    Thanks
     {{ config('app.name') }}
 </x-mail::message>

@@ -1,8 +1,8 @@
 <x-mail::message>
-    Your Payment of has {{ $payment->amount }} been received
+    Your Payment of has {{ '₦' . number_format($payment->amount, 2) }} been received
 
     It was nice doing business with you and would love to have you back.
 
-    Thanks,<br>
+    Thanks
     {{ config('app.name') }}
 </x-mail::message>
