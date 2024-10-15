@@ -57,10 +57,9 @@ class AnalyzePrintJob implements ShouldQueue
             Payment::create([
                 'print_job_id' => $printJob->id,
                 'amount' => $printJob->amount,
-                'status' => config('constants.status.unpaid')
             ]);
             // when ready send the email
-//            Mail::to($this->user)->send(new PrintQuoted($printJob));
+            Mail::to($this->user)->send(new PrintQuoted($printJob));
         } catch (Exception $e) {
             Log::error("Failed to analyze {$this->filePath}: " . $e->getMessage());
         }
