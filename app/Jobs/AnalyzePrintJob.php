@@ -42,7 +42,7 @@ class AnalyzePrintJob implements ShouldQueue
         try {
             $analyzer = new FileAnalyzerService();
             $result = $analyzer->analyze($this->filePath);
-            $settings = AdminSetting::first();
+            $settings = AdminSetting::latest()->first();
             $amount = ($result['black_white_pages'] * $settings->cost_bw_page) + ($result['colored_pages'] * $settings->cost_color_page) + ($result['total_pixels'] * $settings->cost_pixel_image);
             $printJob = PrintJob::create([
                 'total_pages' => $result['total_pages'],
