@@ -57,7 +57,7 @@
                                 <td class="border px-4 py-2">{{ '₦' . number_format($job->amount, 2) }}</td>
                                 <td class="border px-4 py-2"><a href="{{ Storage::url($job->file_path) }}" target="_blank">View File</a></td>
                                 <td class="border px-4 py-2">
-                                    @if($job->status !== config('constants.status.paid'))
+                                    @if($job->status !== config('constants.status.paid') && !Auth::user()->hasRole(config('constants.role.admin')))
                                         <a class="text-red-700" href="{{ route('payment.create', $job) }}">Pay</a>
                                     @else
                                         <span class="text-green-700"></span> {{ ucfirst($job->status) }}
