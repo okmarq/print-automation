@@ -42,10 +42,10 @@ class PrintJobController extends Controller
             if (!Storage::disk('public')->exists($directoryPath)) Storage::disk('public')->makeDirectory($directoryPath);
             $filePath = Storage::disk('public')->putFile($directoryPath, $request->file('file'));
             AnalyzePrintJob::dispatch($filePath, $user);
-            return redirect()->route('print.upload')->with('success', 'File uploaded successfully.');
+            return redirect()->route('print.upload')->with('success', 'File uploaded successfully. We will send you an email with your quotation once it has been analyzed.');
         } catch (Exception $e) {
             Log::debug($e->getMessage());
-            return redirect()->route('print.create')->with('message', 'Something went wrong.')->with('error', $e->getMessage());
+            return redirect()->route('print.create')->with('error', 'Something went wrong.');
         }
     }
 
