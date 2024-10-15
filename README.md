@@ -88,3 +88,16 @@ This project is unlicensed.
 ## Contact
 
 For questions or support, please contact [Joel Okoromi](mailto:okmarq@gmail.com)
+
+## Design thoughts & tradeoffs
+
+Processing the file in the PrintJobController synchronously would lead to immediate display of the completed processed job and quote on screen.
+   
+However, this is not ideal since I/O requests in general degrades sever performance and in production could impact users negatively.
+
+Making use of a Job instead will delay the file processing and Quotation which is remedied by the email being sent after processing.
+
+For simplicity, the roles are used to check if the user is an admin or customer.
+In reality, there are different types of Admins and middlewares can be used to group what admin should do what.
+
+Showed processing for DOCX, PDF, JPG, PNG, and JPEG.
