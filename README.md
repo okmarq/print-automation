@@ -85,6 +85,7 @@ The database server is deployed at render.
 
 - Admin dashboard available at `/admin` to add price settings and view print jobs.
 - If there's no admin settings present, a customer cannot make an upload which is checked by a middleware.
+- For the purpose of testing, admin details are `test@gmail.com` for email and `password` for password.
 
 ## Pricing Calculation
 
