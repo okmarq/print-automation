@@ -9,9 +9,6 @@ Automate print requests and invoice generating processes, where all print job re
 - **File Processing:** Determine page counts and color usage for accurate pricing.
 - **Email:** Send email confirmations.
 - **Mock Payment:** Simulate payment confirmations.
-- **Intervention:** Image processing
-- **PhpOffice:** DOCX processing
-- **Smalot:** PDF processing
 - **Pub/Sub Messaging:** for asynchronous processing of print jobs
 
 ## Requirements
@@ -97,25 +94,19 @@ Prices of each type can be set by the admin where the latest pricing will be use
 
 ## Deployment
 
-- Deploy on platforms like Heroku, AWS, or similar.
-- Ensure environment variables are set appropriately in production.
+- The Application is deployed on the Heroku platform.
+
+### Potential Issues
+
+- Heroku doesn't accept file uploads thus, this feature has to be tested locally
 
 ## Development Notes
 
 - **File Processing:** Uses libraries for PDF and DOCX analysis.
-- **Mock Services:** Payment and email functionalities are simulated for demonstration.
-
-## Conclusion
-
-This application streamlines the printing process, reduces corruption risk, and provides an efficient way to handle print jobs online.
-
-## License
-
-This project is unlicensed.
-
-## Contact
-
-For questions or support, please contact [Joel Okoromi](mailto:okmarq@gmail.com)
+- **Mock Services:** Payment functionalities are simulated for demonstration. However, mailtrap.io server is used for emails
+- **Intervention:** For Image processing
+- **PhpOffice:** For DOCX processing
+- **Smalot:** For PDF processing
 
 ## Design thoughts & tradeoffs
 
@@ -129,3 +120,15 @@ For simplicity, the roles are used to check if the user is an admin or customer.
 In reality, there are different types of Admins and middlewares can be used to group what admin should do what.
 
 Showed processing for DOCX, PDF, JPG, PNG, and JPEG.
+
+## Conclusion
+
+This application streamlines the printing process, reduces corruption risk, and provides an efficient way to handle print jobs online.
+
+## License
+
+This project is unlicensed.
+
+## Contact
+
+For questions or support, please contact [Joel Okoromi](mailto:okmarq@gmail.com)
