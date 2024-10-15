@@ -17,6 +17,11 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('success'))
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                    <span class="block sm:inline">{{ session('success') }}</span>
+                </div>
+            @endif
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <h3 class="text-xl font-black text-center mb-4">Print Jobs</h3>
@@ -51,7 +56,13 @@
                                 <td class="border px-4 py-2">{{ $job->total_pages }}</td>
                                 <td class="border px-4 py-2">{{ '₦' . number_format($job->amount, 2) }}</td>
                                 <td class="border px-4 py-2"><a href="{{ Storage::url($job->file_path) }}" target="_blank">View File</a></td>
-                                <td class="border px-4 py-2">{{ 'Unpaid' }}</td>
+                                <td class="border px-4 py-2">
+                                    @if($job->status !== config('constants.status.paid'))
+                                        <a class="text-red-700" href="{{ route('payment.create', $job) }}">Pay</a>
+                                    @else
+                                        <span class="text-green-700"></span> {{ ucfirst($job->status) }}
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             @if(Auth::user()->hasRole(config('constants.role.admin')))
