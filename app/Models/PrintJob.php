@@ -21,6 +21,7 @@ class PrintJob extends Model
         'total_pixels',
         'amount',
         'user_id',
+        'status',
     ];
 
     public function user(): BelongsTo
