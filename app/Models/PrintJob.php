@@ -29,8 +29,8 @@ class PrintJob extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function payment(): BelongsTo
+    public function payments(): HasMany
     {
-        return $this->belongsTo(Payment::class);
+        return $this->hasMany(Payment::class);
     }
 }

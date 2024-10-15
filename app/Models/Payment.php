@@ -20,9 +20,9 @@ class Payment extends Model
         'status',
     ];
 
-    public function printJobs(): HasMany
+    public function printJob(): BelongsTo
     {
-        return $this->hasMany(PrintJob::class);
+        return $this->belongsTo(PrintJob::class);
     }
 
     public function user(): HasOneThrough
