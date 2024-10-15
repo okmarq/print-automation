@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ class UpdateAdminSettingRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -27,7 +28,6 @@ class UpdateAdminSettingRequest extends FormRequest
             'cost_bw_page' => ['required', 'decimal:0,2'],
             'cost_color_page' => ['required', 'decimal:0,2'],
             'cost_pixel_image' => ['required', 'decimal:0,8'],
-            'is_preferred' => ['required', 'boolean'],
         ];
     }
 }
