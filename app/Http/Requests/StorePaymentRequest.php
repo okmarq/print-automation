@@ -24,7 +24,6 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'print_job_id' => ['required', 'exists:print_jobs,id'],
             'amount' => ['required', 'numeric'],
         ];
     }
