@@ -17,7 +17,6 @@ return new class extends Migration
             $table->decimal('cost_bw_page')->default(0);
             $table->decimal('cost_color_page')->default(0);
             $table->decimal('cost_pixel_image', 10, 8)->default(0);
-            $table->boolean('is_preferred')->default(false);
             $table->timestamps();
         });
     }
