@@ -168,8 +168,6 @@ class FileAnalyzerService
             if (!Storage::disk('public')->exists($tempDir)) {
                 Storage::disk('public')->makeDirectory($tempDir);
             }
-            // i'll use the colored images to determine if the pdf is colored due to the inability of the package to determine if the text in the
-            // pdf is colored
             $coloredPages = 0;
             foreach ($pages as $page) {
                 $resources = $page->getXObjects();
@@ -182,24 +180,22 @@ class FileAnalyzerService
                         $result = $this->analyzeImage(Storage::get($imagePath));
                         $results['total_images'] += $result['total_images'];
                         $results['total_pixels'] += $result['total_pixels'];
-                        // since pdf has a structures page calculation, we rely on the colored effect of the pages to tell us if the page is colored or not
-                        // instead of using the image that makes up the page
-//                $results['total_pages'] += $result['total_pages'];
-//                $results['colored_pages'] += $result['colored_pages'];
-//                $results['black_white_pages'] += $result['black_white_pages'];
+                        // I'll use the colored images to determine if the pdf is colored due to the inability of the package to determine if the text in the
+                        // pdf is colored or not.
                         if ($result['colored_pages'] > $coloredPages) {
                             $coloredPages++;
                         }
                         Storage::disk('public')->delete($imagePath);
                     }
                 }
-                // increment only the black pages due to the insufficiency
+                // increment only the black pages due to its insufficiency
                 $results['black_white_pages']++;
             }
             // use the image to determine the colored paged
             $results['colored_pages'] = $coloredPages;
             // then decrement the black pages by the colored page numbers
-            // not a perfect solution due image size not taken into consideration, but is sufficient
+            // not a perfect solution due image size not taken into consideration, but is sufficient for test purposes
+            // in reality a more robust package will be considered
             $results['black_white_pages'] -= $coloredPages;
             $results['total_pages'] = count($pages);
         } catch (Exception $e) {
