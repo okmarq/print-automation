@@ -9,14 +9,18 @@ use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Interfaces\ImageInterface;
 use PhpOffice\PhpWord\Element\Image;
+use PhpOffice\PhpWord\Element\Link;
 use PhpOffice\PhpWord\Element\Table;
+use PhpOffice\PhpWord\Element\Text;
+use PhpOffice\PhpWord\Element\TextRun;
+use PhpOffice\PhpWord\Element\Title;
 use PhpOffice\PhpWord\IOFactory;
-use Smalot\PdfParser\Page;
 use Smalot\PdfParser\Parser;
 
 class FileAnalyzerService
 {
     private const WORDS_PER_PAGE = 550;
+    private const PARAGRAPHS_PER_PAGE = 10;
 
     private function analyzeImage(string $fullPath): array
     {
@@ -27,13 +31,10 @@ class FileAnalyzerService
             'colored_pages' => 0,
             'black_white_pages' => 0,
         ];
-
         $manager = new ImageManager(new Driver());
         $image = $manager->read($fullPath);
-
         $results['total_pixels'] = $this->countPixels($image);
         $this->isImageColored($image) ? $results['colored_pages']++ : $results['black_white_pages']++;
-
         return $results;
     }
 
@@ -47,7 +48,6 @@ class FileAnalyzerService
         $width = $image->width();
         $height = $image->height();
         if ($width < 10 || $height < 10) return false;
-
         for ($y = 0; $y < $height; $y += 10) {
             for ($x = 0; $x < $width; $x += 10) {
                 $color = $image->pickColor($x, $y);
@@ -76,12 +76,17 @@ class FileAnalyzerService
         $phpWord = IOFactory::load($fullPath);
         $coloredWords = 0;
         $blackWords = 0;
+        $tempDir = 'uploads/docx/images/';
+
+        if (!Storage::disk('public')->exists($tempDir)) {
+            Storage::disk('public')->makeDirectory($tempDir);
+        }
 
         foreach ($phpWord->getSections() as $section) {
             foreach ($section->getElements() as $element) {
-                if ($element instanceof \PhpOffice\PhpWord\Element\TextRun) {
+                if ($element instanceof TextRun) {
                     foreach ($element->getElements() as $textElement) {
-                        if ($textElement instanceof \PhpOffice\PhpWord\Element\Text) {
+                        if ($textElement instanceof Text || $textElement instanceof Link) {
                             $text = $textElement->getText();
                             $fontStyle = $textElement->getFontStyle();
                             $wordCount = str_word_count($text);
@@ -92,14 +97,36 @@ class FileAnalyzerService
                             }
                         }
                     }
-                } elseif ($element instanceof Image) {
-                    $results['total_images']++;
-                    // Implement color analysis here by extracting the color
-                    // Assuming it counts colored words/images for this context
-                    $coloredWords++;
-                } elseif ($element instanceof Table) {
-                    // Assuming tables are black and white
+                } elseif ($element instanceof Title) {
+                    if ($element->getText() instanceof TextRun) {
+                        $text = $element->getText()->getText();
+                    } else {
+                        $text = $element->getText();
+                    }
+                    $wordCount = str_word_count($text);
+                    $blackWords += $wordCount;
                     $blackWords++;
+                } elseif ($element instanceof Table) {
+                    if ($element->getRows() != null) {
+                        $blackWords += count($element->getRows()) * self::PARAGRAPHS_PER_PAGE;
+                    }
+                } elseif ($element instanceof Image) {
+                    // it would seem that the PhpOffice package is unable to find images in a docx file so this section can't be reached.
+                    // However, what this section does is to get the extracted image and pass it into the analyzeImage function to bring back  a
+                    // colored or black and white count with the page number incremented.
+                    // A more accurate approach will be to use the size of the image in correlation with the standard A4 size and deduce the page
+                    // consumption.
+                    $imageData = $element->getImageStringData();
+                    $imagePath = $tempDir . uniqid() . '.jpg';
+                    Storage::disk('public')->put($imagePath, $imageData);
+                    $result = $this->analyzeImage(Storage::get($imagePath));
+                    $results['total_pages'] += $result['total_pages'];
+                    $results['total_images'] += $result['total_images'];
+                    $results['colored_pages'] += $result['colored_pages'];
+                    $results['black_white_pages'] += $result['black_white_pages'];
+                    $results['total_pixels'] += $result['total_pixels'];
+                    $results['colored_pages'] ? $coloredWords++ : $blackWords++;
+                    Storage::disk('public')->delete($imagePath);
                 }
             }
         }
@@ -120,6 +147,9 @@ class FileAnalyzerService
         };
     }
 
+    /**
+     * @throws Exception
+     */
     private function analyzePDF(string $filePath): array
     {
         $results = [
@@ -134,56 +164,49 @@ class FileAnalyzerService
             $parser = new Parser();
             $pdf = $parser->parseFile($filePath);
             $pages = $pdf->getPages();
-            $results['total_pages'] = count($pages);
-            $directoryPath = 'uploads/pdf/extracted_images/';
-
-            if (!Storage::disk('public')->exists($directoryPath)) {
-                Storage::disk('public')->makeDirectory($directoryPath);
+            $tempDir = 'uploads/pdf/images/';
+            if (!Storage::disk('public')->exists($tempDir)) {
+                Storage::disk('public')->makeDirectory($tempDir);
             }
-
+            // i'll use the colored images to determine if the pdf is colored due to the inability of the package to determine if the text in the
+            // pdf is colored
+            $coloredPages = 0;
             foreach ($pages as $page) {
-                $this->processPDFPage($page,$results, $directoryPath);
-
-                $text = $page->getText();
-                if (preg_match('/#[0-9A-Fa-f]{6}|#[0-9A-Fa-f]{3}/', $text)) {
-                    $results['colored_pages']++;
-                } else {
-                    $results['black_white_pages']++;
+                $resources = $page->getXObjects();
+                foreach ($resources as $object) {
+                    if ($object->get('Subtype') != null && strtolower($object->get('Subtype')) === 'image') {
+                        $imageFormat = $this->determineImageFormat($object->get('Filter'));
+                        $imageName = 'image_' . uniqid() . '.' . $imageFormat;
+                        $imagePath = $tempDir . $imageName;
+                        Storage::disk('public')->put($imagePath, $object->getContent());
+                        $result = $this->analyzeImage(Storage::get($imagePath));
+                        $results['total_images'] += $result['total_images'];
+                        $results['total_pixels'] += $result['total_pixels'];
+                        // since pdf has a structures page calculation, we rely on the colored effect of the pages to tell us if the page is colored or not
+                        // instead of using the image that makes up the page
+//                $results['total_pages'] += $result['total_pages'];
+//                $results['colored_pages'] += $result['colored_pages'];
+//                $results['black_white_pages'] += $result['black_white_pages'];
+                        if ($result['colored_pages'] > $coloredPages) {
+                            $coloredPages++;
+                        }
+                        Storage::disk('public')->delete($imagePath);
+                    }
                 }
+                // increment only the black pages due to the insufficiency
+                $results['black_white_pages']++;
             }
+            // use the image to determine the colored paged
+            $results['colored_pages'] = $coloredPages;
+            // then decrement the black pages by the colored page numbers
+            // not a perfect solution due image size not taken into consideration, but is sufficient
+            $results['black_white_pages'] -= $coloredPages;
+            $results['total_pages'] = count($pages);
         } catch (Exception $e) {
             Log::error('Error analyzing PDF: ' . $e->getMessage());
+            throw new Exception("Error analyzing PDF: " . $e->getMessage());
         }
-
         return $results;
-    }
-
-    private function processPDFPage(Page $page, array &$results, string $directoryPath): void
-    {
-        $resources = $page->getXObjects();
-//        if (!isset($resources['XObject'])) return;
-        foreach ($resources['XObject'] as $object) {
-            print_r($object);
-            if (isset($object['Subtype']) && strtolower($object['Subtype']) === 'image') {
-                $results['total_images']++;
-                $imageData = $object['Data'];
-                $imageFormat = $this->determineImageFormat($object['Filter']);
-                $imageName = 'image_' . uniqid() . '.' . $imageFormat;
-                $imagePath = $directoryPath . $imageName;
-                Storage::disk('public')->put($imagePath, $imageData);
-                $this->analyzePDFImage($imagePath, $results);
-                Storage::disk('public')->delete($imagePath); // Clear image after processing
-            }
-        }
-    }
-
-    private function analyzePDFImage(string $imagePath, array &$results): void
-    {
-        $result = $this->analyzeImage($imagePath);
-        $results['total_images'] += $result['total_images'];
-        $results['colored_pages'] += $result['colored_pages'];
-        $results['black_white_pages'] += $result['black_white_pages'];
-        $results['total_pixels'] += $result['total_pixels'];
     }
 
     /**
