@@ -1,12 +1,6 @@
 #!/usr/bin/env bash
-echo "Install NPM Packages"
-npm install
-
-echo "Build View"
-npm run build
-
 echo "Running composer"
-composer install --no-dev --working-dir=/var/www/html/print-automation
+composer install --no-dev
 
 echo "Caching config..."
 php artisan config:cache
