@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateAdminSettingRequest;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 
 class AdminSettingController extends Controller
 {
@@ -28,23 +29,13 @@ class AdminSettingController extends Controller
         return redirect()->route('settings.index')->with('success', 'Settings created successfully.')->with('setting', $setting);
     }
 
-    public function show(AdminSetting $adminSetting)
-    {
-        //
-    }
-
-    public function edit(AdminSetting $adminSetting)
-    {
-        //
-    }
-
-    public function update(UpdateAdminSettingRequest $request, AdminSetting $adminSetting)
+    public function update(UpdateAdminSettingRequest $request, AdminSetting $adminSetting): RedirectResponse
     {
         $adminSetting->update($request->validated());
         return redirect()->route('settings.index')->with('success', 'Settings updated successfully.');
     }
 
-    public function destroy(AdminSetting $adminSetting)
+    public function destroy(AdminSetting $adminSetting): RedirectResponse
     {
         $adminSetting->delete();
         return redirect()->route('settings.index')->with('success', 'Settings deleted successfully.');
