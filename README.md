@@ -71,9 +71,12 @@ Automate print requests and invoice generating processes, where all print job re
 
 ## Usage
 
+You can access the application [here at Heroku](https://print-automation-0e22a831cb71.herokuapp.com).
+
+The database server is deployed at render.
+
 ### Customer
 
-- Access the application at http://localhost:8000.
 - Upload a file to receive a quote via email after it has been processed asynchronously.
 - After which payment can be made and an email is sent to the user for every payment made.
 - Incomplete payments made will keep the status as unpaid until a complete payment is made for the print job.
