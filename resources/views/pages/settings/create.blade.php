@@ -22,7 +22,10 @@
                         @csrf
                         <div class="form-group">
                             <x-input-label for="version" :value="__('Version')"/>
-                            <x-text-input id="version" name="version" type="text" class="mt-1 block w-full" required/>
+                            <x-text-input id="version" name="version" type="text" class="mt-1 block w-full"
+                                          required
+                                          autofocus
+                                          autocomplete="version"/>
                             <x-input-error class="mt-2" :messages="$errors->get('version')"/>
                         </div>
                         <div class="form-group">
@@ -48,12 +51,6 @@
                                           autofocus
                                           autocomplete="cost_pixel_image"/>
                             <x-input-error class="mt-2" :messages="$errors->get('cost_pixel_image')"/>
-                        </div>
-                        <div class="block mt-4">
-                            <label for="is_preferred" class="inline-flex items-center">
-                                <input id="is_preferred" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="is_preferred">
-                                <span class="ms-2 text-sm text-gray-600">{{ __('Preferred') }}</span>
-                            </label>
                         </div>
                         <div class="flex items-center gap-4">
                             <x-primary-button>{{ __('Save') }}</x-primary-button>
