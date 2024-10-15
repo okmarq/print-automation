@@ -28,7 +28,6 @@ class StoreAdminSettingRequest extends FormRequest
             'cost_bw_page' => ['required', 'decimal:0,2'],
             'cost_color_page' => ['required', 'decimal:0,2'],
             'cost_pixel_image' => ['required', 'decimal:0,8'],
-            'is_preferred' => ['required', 'boolean'],
         ];
     }
 }
