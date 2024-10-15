@@ -46,7 +46,7 @@ class PrintPayment extends Mailable
         return new Content(
             markdown: 'mail.paid',
             with: [
-                'printJob' => $this->payment,
+                'payment' => $this->payment,
             ],
         );
     }
