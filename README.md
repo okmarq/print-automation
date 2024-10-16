@@ -90,7 +90,7 @@ Prices of each type can be set by the admin where the latest pricing will be use
 
 - **Black and White Pages:** N20 per page
 - **Coloured Pages:** N25 per page
-- **Image Pixels:** N0.00005 per pixel (optional bonus)
+- **Image Pixels:** N0.00005 per pixel
 
 ## Deployment
 
