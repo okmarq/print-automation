@@ -126,7 +126,7 @@ Prices of each type can be set by the admin where the latest pricing will be use
 
 ## Development Notes
 
-- **File Processing:** Uses libraries for PDF and DOCX analysis.
+- **File Processing:** Uses libraries for Image, PDF and DOCX analysis.
 - **Mock Services:** Payment functionalities are simulated for demonstration. However, mailtrap.io server is used for emails
 - **Intervention:** For Image processing
 - **PhpOffice:** For DOCX processing
