@@ -118,7 +118,7 @@ Prices of each type can be set by the admin where the latest pricing will be use
 
 ## Deployment
 
-- The Application is deployed on the Heroku platform.
+- The Application is deployed on the Heroku platform with a postgres database hosted on the Render platform.
 
 ### Potential Issues
 
