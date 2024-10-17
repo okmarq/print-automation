@@ -145,6 +145,9 @@ In reality, there are different types of Admins and middlewares can be used to g
 
 Showed processing for DOCX, PDF, JPG, PNG, and JPEG.
 
+In production, more predictability can be given to the job processing through the use of laravel locks, however, it's best implemented in projects 
+that has a wide scope as it would quickly become overkill for simple or small projects  
+
 ## Conclusion
 
 This application streamlines the printing process, reduces corruption risk, and provides an efficient way to handle print jobs online.
