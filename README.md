@@ -32,11 +32,29 @@ Automate print requests and invoice generating processes, where all print job re
     ```
     composer install
     ```
+   ```
+   npm install
+   ```
 
 3. **Set up environment:**
 
-   Copy .env.example to .env and update database credentials.
+   Copy .env.example to .env and update database credentials adding the details below to your env file.
 
+       ```
+       For testing purposes only
+
+       MAIL_MAILER=smtp
+       MAIL_HOST=sandbox.smtp.mailtrap.io
+       MAIL_PORT=2525
+       MAIL_USERNAME=<your mailer.io username>
+       MAIL_PASSWORD=<your mailer.io password>
+       MAIL_ENCRYPTION=tls
+       MAIL_FROM_ADDRESS=<your email address>
+       MAIL_FROM_NAME="${APP_NAME}"
+       FILESYSTEM_DISK=public
+       QUEUE_CONNECTION=database
+       TEST_PASSWORD=password
+       ```
 
 4. **Generate application key:**
 
@@ -60,7 +78,14 @@ Automate print requests and invoice generating processes, where all print job re
     php artisan queue:work
     ```
 
-8. **Serve the application:**
+8. **Build the application front end:**
+
+    ```
+    npm run build
+    ```
+    ```
+
+9. **Serve the application:**
 
     ```
     php artisan serve
