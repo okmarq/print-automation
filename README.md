@@ -112,9 +112,9 @@ The database server is deployed at render.
 
 Prices of each type can be set by the admin where the latest pricing will be used where multiple exists.
 
-- **Black and White Pages:** N20 per page
-- **Coloured Pages:** N25 per page
-- **Image Pixels:** N0.00005 per pixel
+- **Black and White Pages:** ₦20 per page
+- **Coloured Pages:** ₦25 per page
+- **Image Pixels:** ₦0.00005 per pixel
 
 ## Deployment
 
