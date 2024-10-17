@@ -83,7 +83,6 @@ Automate print requests and invoice generating processes, where all print job re
     ```
     npm run build
     ```
-    ```
 
 9. **Serve the application:**
 
